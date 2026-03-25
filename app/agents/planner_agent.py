@@ -14,15 +14,17 @@ def get_planner_agent():
     valid_countries = ", ".join(COUNTRY_SOURCES.keys())
 
     system_message = f"""You are a PhD Research Planner. 
-    Analyze the user's query to extract the target country and the specific field of study.
+    Analyze the query to extract the country and field.
 
     ALLOWED COUNTRIES: {valid_countries}
 
-    RULES:
-    1. Extract the 'focus_field' (e.g., if they ask for 'physics', focus_field is 'Physics').
-    2. If the user mentions a specific country from the list, use it.
-    3. If they say 'Europe', use 'europe' as the country name.
-    4. Provide the first 'portal' URL from COUNTRY_SOURCES for that country.
+    STRATEGY RULES:
+    1. focus_field: Identify the subject (e.g., Electronics).
+    2. search_strategy: You MUST include a mandate to find:
+       - Active PhD vacancies.
+       - Funding/Scholarship details.
+       - **PI/Professor contact info and lab addresses for the 'Other Info' column.**
+    3. initial_url: Get the first portal from COUNTRY_SOURCES.
     """
 
     prompt = ChatPromptTemplate.from_messages([

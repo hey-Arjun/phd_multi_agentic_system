@@ -146,7 +146,7 @@ def create_graph():
 if __name__ == "__main__":
     async def run_app():
         app = create_graph()
-        inputs = {"query": "find phd in maths in Austria"}
+        inputs = {"query": "find phd in physics in germany"}
 
         async for output in app.astream(inputs):
             for key, value in output.items():

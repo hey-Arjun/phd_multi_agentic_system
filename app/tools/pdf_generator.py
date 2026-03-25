@@ -5,9 +5,7 @@ class PDFGenerator:
     def __init__(self):
         self.pdf = FPDF()
         self.pdf.set_auto_page_break(auto=True, margin=20)
-        # Use a built-in Unicode font to handle dashes, accents, etc.
-        # 'DejaVu' is usually included or easily accessible in fpdf2
-        # If DejaVu isn't found, we'll use a fallback sanitization method
+        # Use a built-in Unicode font to handle dashes, accents, etc
         self.font_name = "Arial" # FPDF2 handles Arial as Unicode better than Helvetica
 
     def _sanitize(self, text: str) -> str:
