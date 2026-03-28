@@ -25,7 +25,7 @@ class ResearchAgent:
             all_links = await self.scraper.extract_links(root_url)
             
             # 2. Filter noise
-            noise = ["facebook", "twitter", "linkedin", "instagram", "cookie", "privacy", "login", "contact", "about"]
+            noise = ["facebook", "twitter", "linkedin", "instagram", "cookie", "privacy", "login"]
             candidates = [l for l in all_links if not any(n in l.lower() for n in noise)]
             
             if not candidates:
@@ -33,10 +33,15 @@ class ResearchAgent:
 
             # 3. LLM Selection
             prompt = ChatPromptTemplate.from_messages([
-                ("system", "You are a PhD Recruitment Expert. Out of these links from {country}, "
-                           "pick the 3-5 most likely to lead to specific PhD program listings, "
-                           "admission portals, or funding/scholarship details."),
-                ("human", "Available Links: {links}")
+                ("system", """You are a PhD Recruitment Expert. 
+                Pick up to 8 high-priority links from the list.
+                
+                YOU MUST INCLUDE:
+                - At least 4 links to specific PhD vacancies or program listings.
+                - At least 2 links to 'People', 'Staff', 'Research Groups', or 'Contact' pages (these are needed for Professor details).
+                
+                Priority keywords: 'phd', 'vacancies', 'staff', 'contact', 'people', 'professor'."""),
+                ("human", "Available Links from {country}: {links}")
             ])
             
             chain = prompt | self.llm.with_structured_output(RelevantLinks)

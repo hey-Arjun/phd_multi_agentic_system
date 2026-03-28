@@ -23,22 +23,15 @@ class ExtractorAgent:
 
     async def parse_data(self, raw_text: str, field: str):
         processed_text = clean_text(raw_text)
-        
         prompt = f"""
-        You are a PhD Admissions Research Intelligence Agent. Analyze the provided text to find PhD opportunities in {field}.
+        Analyze the text to find PhD opportunities in {field}.
         
-        EXTRACTION PROTOCOLS:
-        1. DEADLINES: Never return 'See website'. If a specific date is absent, look for phrases like 'Rolling', 'Open-ended', or 'Contact supervisor'.
-        2. FUNDING: Never return 'Check portal'. Search for keywords like 'Salary', 'Contract', 'Grant', 'Fellowship', or 'Scholarship'. If the text says 'funded', specify 'Project-funded'.
-        3. OTHER INFO (CRITICAL): Populate the 'additional_metadata' field with:
-           - Names of Professors or Principal Investigators (PIs).
-           - Contact emails and phone numbers.
-           - Physical addresses or specific building/lab names.
-           - Crucial requirements (e.g., 'Requires C1 English' or 'GRE Optional').
-        4. CONSISTENCY: Ensure every program found has its own entry in the list.
-
-        TEXT TO ANALYZE:
-        {processed_text[:15000]}
+        STRICT RULES:
+        1. NEVER use 'See website' or 'Check portal'.
+        2. DEADLINE: If no date, describe the process (e.g., 'Rolling' or 'Requires supervisor contact').
+        3. OTHER INFO: You MUST extract Professor names, emails, phone numbers, and lab addresses into the 'additional_metadata' field.
+        
+        TEXT: {processed_text[:25000]}
         """
         
         structured_llm = self.llm.with_structured_output(PhDListingResponse)
